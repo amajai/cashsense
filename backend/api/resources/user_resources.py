@@ -40,7 +40,7 @@ class UserRegistration(Resource):
 
             return {'message': 'User registered successfully', 'data': data }, 201
         except Exception as err:
-            return {'message': 'An error occured, ensure you are using the right datatypes and your request body is properly formatted'}
+            return {'message': 'An error occured, ensure you are using the right keys, datatypes and your request body is properly formatted'}, 400
         
 
 class UserLogin(Resource):
