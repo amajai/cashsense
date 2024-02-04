@@ -12,6 +12,7 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     """User model"""
     id = db.Column(db.Integer, primary_key=True)
+    rank = db.Column(db.Integer, default=0)
     firstname = db.Column(db.String(120), nullable=False)
     lastname = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
