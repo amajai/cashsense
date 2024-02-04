@@ -102,3 +102,42 @@ class Users(Resource):
         except Exception as err:
             print(err)
             return {'message': 'Something went wrong, try again!'}, 500
+        
+    @login_required
+    def put(self, id):
+        """ PUT /users/<int:id> """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                parser = reqparse.RequestParser()
+                parser.add_argument('firstname', type=str, location='json')
+                parser.add_argument('lastname', type=str, location='json')
+                parser.add_argument('email', type=str, location='json')
+                parser.add_argument('password', type=str, location='json')
+                data = parser.parse_args()
+
+                user = User.query.get(id)
+                if not user:
+                    return {'message': 'User not found'}, 404
+
+                # Update user attributes if the fields are provided in the request
+                if data['firstname']:
+                    user.firstname = data['firstname']
+                if data['lastname']:
+                    user.lastname = data['lastname']
+                if data['email']:
+                    # Check if the new email is not already taken
+                    existing_user = User.query.filter_by(email=data['email']).first()
+                    if existing_user and existing_user.id != id:
+                        return {'message': 'Email is already in use by another user'}, 400
+                    user.email = data['email']
+                if data['password']:
+                    user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+
+                db.session.commit()
+
+                return {'message': 'User updated successfully', 'data': {k: v for k, v in data.items() if v is not None}}
+
+            else:
+                return {'message': "You are not authorized to update this user's details"}, 403
+        except Exception as err:
+            return {'message': str(err)}, 500
