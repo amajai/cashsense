@@ -82,6 +82,28 @@ user_fields = {
     'created_at': fields.DateTime,
     'updated_at': fields.DateTime
 }
+
+class All_users(Resource):
+    """/users route handler"""
+    @login_required
+    def get(self):
+        """GET /users """
+        try:
+            if current_user.rank == 1:
+                user = User.query.all()
+                if user:
+                    # Use marshal to serialize the user object
+                    user = marshal(user, user_fields)
+                    return {'message': 'Successful', 'data': user}
+                else:
+                    return {'message': 'Users not found'}, 404
+            else:
+                return {'message': "You do not have permission to perform this operation"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again!'}, 500
+        
+
     
 class Users(Resource):
     """/users/<int:id> route handler"""
