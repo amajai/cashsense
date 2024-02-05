@@ -141,3 +141,21 @@ class Users(Resource):
                 return {'message': "You are not authorized to update this user's details"}, 403
         except Exception as err:
             return {'message': str(err)}, 500
+        
+    @login_required
+    def delete(self, id):
+        """DELETE /users/<int:id> """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                user = User.query.get(id)
+                if user:
+                    db.session.delete(user)
+                    db.session.commit()
+                    return {'message': 'User Deleted', 'data': {'id': user.id, 'email': user.email}}
+                else:
+                    return {'message': 'User not found'}, 404
+            else:
+                return {'message': "You are trying to access another user's detail"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again!'}, 500
