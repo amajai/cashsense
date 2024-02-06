@@ -1,4 +1,4 @@
-"""User related models"""
+"""User model"""
 from flask_login import UserMixin
 from datetime import datetime
 from api import db, login_manager
