@@ -182,4 +182,4 @@ class Users(Resource):
                 return {'message': "You are trying to access another user's detail"}, 403
         except Exception as err:
             print(err)
-            return {'message': 'Something went wrong, try again!'}, 500
+            return {'message': 'Something went wrong, try again, ensure your request is correct!'}, 500
