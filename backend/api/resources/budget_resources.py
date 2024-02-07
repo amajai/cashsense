@@ -75,3 +75,24 @@ class AllUserBudgets(Resource):
             print(err)
             return {'message': 'Something went wrong, try again!'}, 500
         
+
+    
+class Budgets(Resource):
+    """/users/<int:id>/budgets/<int:budget_id> route handler"""
+    @login_required
+    def get(self, id, budget_id):
+        """GET /users/<int:id>/budgets/<int:budget_id> """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                budget = Budget.query.filter_by(user_id=id, id=budget_id).first()
+                if budget:
+                    # Use marshal to serialize the budget object
+                    budget = marshal(budget, budget_fields)
+                    return {'message': 'Successful', 'data': budget}
+                else:
+                    return {'message': 'Budget not found'}, 404
+            else:
+                return {'message': "You are trying to access another user's budget"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again!'}, 500
