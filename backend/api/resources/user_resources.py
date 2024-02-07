@@ -5,6 +5,18 @@ from api import db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 
 
+user_fields = {
+    'id': fields.Integer,
+    'rank': fields.Integer,
+    'firstname': fields.String,
+    'lastname': fields.String,
+    'email': fields.String,
+    'password': fields.String,
+    'created_at': fields.DateTime,
+    'updated_at': fields.DateTime
+}
+
+
 class Default(Resource):
     """Api home route handler (/)"""
     def get(self):
@@ -59,7 +71,8 @@ class UserLogin(Resource):
 
         if bcrypt.check_password_hash(user.password, data['password']):
             login_user(user)
-            return {'message': 'Login successful'}
+            user = marshal(user, user_fields)
+            return {'message': 'Login successful', 'data': user}
         else:
             return {'message': 'Invalid credentials'}, 400
         
@@ -72,18 +85,7 @@ class UserLogout(Resource):
         return {'message': 'Logged out Successfully'}
     
 
-user_fields = {
-    'id': fields.Integer,
-    'rank': fields.Integer,
-    'firstname': fields.String,
-    'lastname': fields.String,
-    'email': fields.String,
-    'password': fields.String,
-    'created_at': fields.DateTime,
-    'updated_at': fields.DateTime
-}
-
-class All_users(Resource):
+class AllUsers(Resource):
     """/users route handler"""
     @login_required
     def get(self):
