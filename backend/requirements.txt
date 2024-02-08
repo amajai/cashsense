@@ -1,5 +1,6 @@
-pip[upgrade]
+
 Cython<3
+PyYAML
 alembic==1.13.1
 aniso8601==9.0.1
 appdirs==1.4.4
@@ -105,5 +106,3 @@ wheel[pre]
 wrapt==1.16.0
 WTForms==3.1.1
 zipp==1.0.0
--c cython_constraint.txt
-PyYAML==5.4.1
