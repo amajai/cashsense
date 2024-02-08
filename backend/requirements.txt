@@ -10,7 +10,6 @@ cffi==1.16.0
 chardet==4.0.0
 charset-normalizer==3.2.0
 click==8.1.7
-command-not-found
 cryptography==2.8
 dbus-python==1.2.18
 decorator==5.1.1
