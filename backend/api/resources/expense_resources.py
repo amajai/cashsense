@@ -71,3 +71,83 @@ class AllBudgetExpenses(Resource):
         except Exception as err:
             print(err)
             return {'message': 'Something went wrong, try again!'}, 500
+        
+
+    
+class Expenses(Resource):
+    """/users/<int:id>/budgets/<int:budget_id>/expenses/<int:expense_id> route handler"""
+    @login_required
+    def get(self, id, budget_id, expense_id):
+        """GET /users/<int:id>/budgets/<int:budget_id>/expenses/<int:expense_id> """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                budget = Budget.query.filter_by(user_id=id, id=budget_id).first()
+                if budget:
+                    expenses = Expense.query.filter_by(user_id=id, budget_id=budget_id, id=expense_id).first()
+                    if expenses:
+                        # Use marshal to serialize the expense object
+                        serialized_expense = marshal(expenses, expense_fields)
+                        return {'message': 'Successful', 'data': serialized_expense}
+                    else:
+                        return {'message': 'Expense not found'}, 404
+                else:
+                    return {'message': 'Budget not found'}, 404
+            else:
+                return {'message': "You are trying to access another user's expense"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again!'}, 500
+        
+    @login_required
+    def put(self, id, budget_id, expense_id):
+        """ PUT /users/<int:id>/budgets/<int:budget_id>/expenses/<int:expense_id> """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                budget = Budget.query.filter_by(user_id=id, id=budget_id).first()
+                if budget:
+                    expense = Expense.query.filter_by(user_id=id, budget_id=budget_id, id=expense_id).first()
+                    if expense:
+                        parser = reqparse.RequestParser()
+                        parser.add_argument('category', help='This field is required', type = str, location = 'json')
+                        parser.add_argument('amount', help='This field is required', type = float, location = 'json')
+                        data = parser.parse_args()
+
+                        if data['category']:
+                            expense.category = data['category']
+                        if data['amount']:
+                            expense.amount = data['amount']
+
+                        db.session.commit()
+                        return {'message': 'Expense updated successfully', 'data': {k: v for k, v in data.items() if v is not None}}
+                    else:
+                        return {'message': 'Expense not found'}, 404
+                else:
+                    return {'message': 'Budget not found'}, 404
+
+            else:
+                return {'message': "You are not authorized to update this Expense"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'An error occured, ensure you are using the right keys, datatypes and your request body is properly formatted'}, 400
+        
+    @login_required
+    def delete(self, id, budget_id, expense_id):
+        """DELETE /users/<int:id>/budgets/<int:budget_id>/expense/<int:expense_id> """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                budget = Budget.query.filter_by(user_id=id, id=budget_id).first()
+                if budget:
+                    expense = Expense.query.filter_by(user_id=id, budget_id=budget_id, id=expense_id).first()
+                    if expense:
+                        db.session.delete(expense)
+                        db.session.commit()
+                        return {'message': 'Expense Deleted Successfully', 'data': {'id': expense.id }}
+                    else:
+                        return {'message': 'Expense not found'}, 404
+                else:
+                    return {'message': 'Budget not found'}, 404
+            else:
+                return {'message': "You are trying to access another user's expense"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again, ensure your request is correct!'}, 500
