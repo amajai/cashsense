@@ -48,3 +48,26 @@ class AllBudgetExpenses(Resource):
         except Exception as err:
             print(err)
             return {'message': 'An error occured, ensure you are using the right keys, datatypes and your request body is properly formatted'}, 400
+
+
+    @login_required
+    def get(self, id, budget_id):
+        """GET /users/id/budgets/<int:budget_id>/expense """
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                budget = Budget.query.filter_by(user_id=id, id=budget_id).first()
+                if budget:
+                    expenses = Expense.query.filter_by(user_id=id, budget_id=budget_id).all()
+                    if expenses:
+                        # Use marshal to serialize the budget object
+                        serialized_expenses = marshal(expenses, expense_fields)
+                        return {'message': 'Successful', 'data': serialized_expenses}
+                    else:
+                        return {'message': 'No expense attached to this budget currently'}, 404
+                else:
+                    return {'message': 'Budgets not found'}, 404
+            else:
+                return {'message': "You do not have permission to perform this operation"}, 403
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again!'}, 500
