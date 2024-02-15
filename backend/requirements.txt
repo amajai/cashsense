@@ -1,5 +1,6 @@
-Cython<3
-PyYAML
+cython<3.0.0
+wheel
+pyyaml==5.4.1 --no-build-isolation
 alembic==1.13.1
 aniso8601==9.0.1
 appdirs==1.4.4
@@ -10,7 +11,6 @@ blinker==1.7.0
 bs4==0.0.1
 certifi==2023.5.7
 cffi==1.16.0
-cairocffi==1.2.0
 chardet==4.0.0
 charset-normalizer==3.2.0
 click==8.1.7
@@ -58,8 +58,7 @@ MarkupSafe==2.1.3
 mechanize==0.4.8
 mistune==3.0.2
 more-itertools==8.10.0
-mysql-connector-python>=8.0.24,<9.0.0
-# mysqlclient==8.0.34
+mysqlclient==2.2.0
 netifaces==0.11.0
 numpy==1.25.2
 oauthlib==3.2.0
@@ -83,12 +82,12 @@ PySimpleValidate==0.2.12
 python-dateutil==2.8.2
 python-dotenv==1.0.1
 pytz==2023.3
-PyYAML==5.4.1
+# PyYAML==5.4.1
 referencing==0.32.1
 requests==2.31.0
 rpds-py==0.17.1
 SecretStorage==3.3.1
-setuptools[pre]
+# setuptools[pre]
 six==1.16.0
 soupsieve==2.4.1
 SQLAlchemy==2.0.23
@@ -103,7 +102,7 @@ urllib3==2.0.4
 wadllib==1.3.6
 webencodings==0.5.1
 Werkzeug==3.0.1
-wheel[pre]
+# wheel[pre]
 wrapt==1.16.0
 WTForms==3.1.1
 zipp==1.0.0
