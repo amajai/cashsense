@@ -7,4 +7,3 @@ backend/__pycache__
 backend/api/models/__pycache__
 backend/api/resources/__pycache__
 backend/.env
-frontend
