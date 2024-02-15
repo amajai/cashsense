@@ -1,6 +1,6 @@
 cython<3.0.0
 wheel
-pyyaml==5.4.1 --no-build-isolation
+pyyaml==5.4.1 --global-option=build_ext --global-option=-j4
 alembic==1.13.1
 aniso8601==9.0.1
 appdirs==1.4.4
