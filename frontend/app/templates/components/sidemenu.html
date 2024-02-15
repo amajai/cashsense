@@ -8,27 +8,27 @@
     <hr class="text-success">
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-            <a href="#" class="nav-link active">
+            <a href="{{url_for('dashboard')}}" class="nav-link {{ 'active' if active_page == 'dashboard' else '' }}">
                 <i class="bi bi-house-fill pe-2"></i>
                 Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{url_for('transactions')}}" class="nav-link {{ 'active' if active_page == 'transactions' else '' }}">
                 <i class="bi bi-arrow-down-up pe-2"></i>
                 Transactions
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{url_for('budgets')}}" class="nav-link {{ 'active' if active_page == 'budgets' else '' }}">
                 <i class="bi bi-wallet-fill pe-2"></i>
                 Budgets
             </a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="bi bi-people-fill pe-2"></i>
-                Friends List
+            <a href="{{url_for('expense')}}" class="nav-link {{ 'active' if active_page == 'expense' else '' }}">
+                <i class="bi bi-cash-coin pe-2"></i>
+                Expense
             </a>
         </li>
     </ul>

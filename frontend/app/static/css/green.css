@@ -83,7 +83,6 @@ textarea.notice {
 	background:linear-gradient(-47deg, #2aa275 0%, #006f45 100%);
 }
 
-.btn,
 .to-top:hover,
 .play-btn,
 .service-single:hover,
@@ -119,7 +118,7 @@ blockquote {
 #zoom-out:hover,
 .pagination li a:hover,
 .pagination li a.active {
-	background-color:#1f8760;
+	background-color:#0c2d21;
 }
 
 #zoom-in, 
@@ -127,8 +126,3 @@ blockquote {
 .team-member .team-social {
 	background-color:rgba(42, 162, 117, 0.85);
 }
-
-
-
-
-

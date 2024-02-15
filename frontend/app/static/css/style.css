@@ -3340,3 +3340,11 @@ p.stat-cards-info__progress {
     bottom: 0;
 	width: 100%;
 }
+
+.expense {
+	color: red !important;
+}
+
+.income {
+	color: green !important;
+}
