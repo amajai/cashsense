@@ -1,0 +1,44 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Budget{% endblock %}
+
+{% block content %}
+	<div class="container px-5">
+		<div class="row stat-cards">
+			<div class="col-md-12 col-xl-12">
+			  <article class="stat-cards-item">
+				<table class="table table-striped">
+					<thead>
+					  <tr>
+						<th scope="col">Budget Name</th>
+						<th scope="col">Amount</th>
+						<th scope="col">Start date</th>
+						<th scope="col">End Date</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+						<td>Allowance</td>
+						<td>N5000</td>
+						<td>08/02/2023</td>
+						<td>08/05/2024</td>
+					  </tr>
+					  <tr>
+						<td scope="row">Getting new car</td>
+						<td>N600,000</td>
+						<td>04/01/2023</td>
+						<td>01/10/2024</td>
+					  </tr>
+					  <tr>
+						<td scope="row">Buying PS5</td>
+						<td>N500,000</td>
+						<td>01/05/2023</td>
+						<td>13/11/2024</td>
+					  </tr>
+					</tbody>
+				  </table>
+			  </article>
+			</div>
+		</div>
+	</div>
+{% endblock %}
