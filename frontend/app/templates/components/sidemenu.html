@@ -31,6 +31,14 @@
                 Expense
             </a>
         </li>
+        {% if session['current_user']['rank'] == 1 %}
+        <li class="nav-item">
+            <a href="{{url_for('users')}}" class="nav-link {{ 'active' if active_page == 'users' else '' }}">
+                <i class="bi bi-people-fill pe-2"></i>
+                Users
+            </a>
+        </li>
+        {% endif %}
     </ul>
     <hr class="text-success">
  

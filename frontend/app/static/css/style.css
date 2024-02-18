@@ -273,7 +273,7 @@ input[type="month"] {
 	-webkit-appearance:listbox;
 }
 
-input, textarea {
+input, textarea, select {
 	border:1px solid #ddd !important;
 	background-color:#fff !important;
 	font-weight:normal !important;
@@ -3347,4 +3347,8 @@ p.stat-cards-info__progress {
 
 .income {
 	color: green !important;
+}
+
+.table-scroll {
+    overflow-x: auto;
 }

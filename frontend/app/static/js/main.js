@@ -617,22 +617,10 @@
 			} else {
 				url = document.location.protocol+'//'+document.location.host+document.location.pathname+url;
 			}
-			
-			//Share
-			if (network==='twitter') {
-				return window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(title)+'&url='+encodeURIComponent(url), 'share', params);
-			} else if (network==='facebook') {
-				return window.open('https://www.facebook.com/sharer/sharer.php?s=100&p[url]='+encodeURIComponent(url)+'&p[title]='+encodeURIComponent(title)+'&p[images][0]='+encodeURIComponent(image), 'share', params);
-			} else if (network==='pinterest') {
-				return window.open('https://pinterest.com/pin/create/bookmarklet/?media='+image+'&description='+title+' '+encodeURIComponent(url), 'share', params);
-			} else if (network==='linkedin') {
-				return window.open('https://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent(url)+'&title='+title, 'share', params);
-			}
+		
 			
 			return;
 		}
-
-
 		
 	};
 	
@@ -643,7 +631,7 @@
 		let sidemenu = document.querySelector('.sidemenu')
 		sidemenu.classList.toggle('show');
 	});
-	
+
 })(jQuery);
 
 
