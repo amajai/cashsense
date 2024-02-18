@@ -54,12 +54,20 @@
 								<span>Contact</span>
 							</a>
 						</li>
+                        {% if session['logged_in'] %}
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-light" href="{{url_for('dashboard')}}">
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        {% else %}
 						<li class="mx-5">
 						<li class="nav-item">
 							<a class="nav-link" href="{{ link_url }}">
 								<span>{{ link_name }}</span>
 							</a>
 						</li>
+                        {% endif %}
 					</ul>
 				</div>
 			</div>

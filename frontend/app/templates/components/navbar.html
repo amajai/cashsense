@@ -60,13 +60,19 @@
                                 <span>Screenshots</span>
                             </a>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link js-scroll-trigger" href="#contact">
                                 <span>Contact</span>
                             </a>
                         </li>
                         <li class="mx-5"></li>
+                        {% if session['logged_in'] %}
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-light" href="{{url_for('dashboard')}}">
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        {% else %}
                         <li class="nav-item">
                             <a class="nav-link btn-outline-light" href="{{url_for('login')}}">
                                 <span>Login</span>
@@ -77,6 +83,7 @@
                                 <span>Sign Up</span>
                             </a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

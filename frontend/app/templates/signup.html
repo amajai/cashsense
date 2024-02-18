@@ -19,7 +19,17 @@
 		</div>
 		<div class="row justify-content-center">
 			<div class="col-6 col-lg-6">
-				<form id="signup-form"  method="post" class="bg-success-subtle">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+							{{ message }}
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					{% endfor %}
+				{% endif %}
+				{% endwith %}
+				<form id="signup-form" action="/signup"  method="post" class="bg-success-subtle">
 					<div class="row">
 						<div class="col">
 							<div class="form-group mt-2 mb-3">
@@ -31,7 +41,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group mt-2 mb-3">
-								<input type="text" name="lastname" class="form-control field-lastname" placeholder="Last name" required>
+								<input type="text" name="lastname" class="form-control field-lastname" placeholder="Last name">
 							</div>
 						</div>                                
 					</div>
@@ -47,14 +57,20 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group mt-2 mb-3">
-								<input type="password" name="password" class="form-control field-password" placeholder="Password" required>
+								<input type="password" name="password1" class="form-control field-password" placeholder="Password" required>
 							</div>
 						</div>                                
 					</div>
-
+					<div class="row">
+						<div class="col">
+							<div class="form-group mt-2 mb-3">
+								<input type="password" name="password2" class="form-control field-password" placeholder="Confirm Password" required>
+							</div>
+						</div>                                
+					</div>
 					<div class="row">
 						<div class="col-12 col-lg-12 mt-2">
-							<button type="submit" id="signup" name="signup" class="btn btn-lg">Sign Up</button>
+							<button type="submit" id="signup" name="signup" class="btn btn-lg btn-success">Sign Up</button>
 						</div>
 					</div>
 				</form>
