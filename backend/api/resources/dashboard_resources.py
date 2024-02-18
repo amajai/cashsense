@@ -9,7 +9,6 @@ class Dashboard(Resource):
     """Handles auth route for dashboard"""
     @jwt_required()
     def get(self):
-        print(current_user.is_authenticated)
         if current_user.is_authenticated:
             user = get_jwt_identity()
             return jsonify({'current_user': user})
@@ -17,4 +16,3 @@ class Dashboard(Resource):
             response = jsonify({'error': 'Unauthorized'})
             response.status_code = 401
             return response
-    
