@@ -1,0 +1,73 @@
+{% extends 'dashboard_base.html' %}
+
+{% set active_page = "budgets" %}
+{% block title %}Budget{% endblock %}
+
+{% block content %}
+	<div class="container px-5">
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			{% endfor %}
+		{% endif %}
+		{% endwith %}
+		<div class="row stat-cards">
+			<div class="col-md-12 col-xl-12">
+			  <article class="stat-cards-item">
+				{% if budgets %}
+				<table class="table table-bordered table-striped table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Amount</th>
+							<th>Start Date</th>
+							<th>End Date</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+							{% for budget in budgets %}
+							<tr>
+								<td>{{budget.id}}</td>
+								<td>{{budget.name}}</td>
+								<td>{{"₦{:,.2f}".format(budget.amount)}}</td>
+								<td>{{budget.start_date}}</td>
+								<td>{{budget.end_date}}</td>
+								<td>
+									<a href="{{url_for('edit_budget', budget_id=budget.id)}}">
+										<i class="bi bi-pencil-square text-info pe-2"></i>
+									</a>
+									
+									<a href="{{url_for('delete_budget', budget_id=budget.id)}}" class="pe-auto">
+										<i class="bi bi-trash3 text-danger pe-2"></i>
+									</a>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+				<div class="container">
+					<div class="text-center my-5">
+						<h5>No budget has been added!</h5>
+					</div>
+				</div>
+				{% endif %}
+			  </article>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block btns %}
+<div class="d-flex">
+	<a href="{{url_for('add_budget')}}" class="btn btn-dark me-2 text-white">
+		ADD
+	</a>
+</div>
+{% endblock %}
+

@@ -1,0 +1,52 @@
+{% extends 'dashboard_base.html' %}
+{% set active_page = "expense.expenses" %}
+{% block title %}Edit Expense{% endblock %}
+
+
+{% block content %}
+	<div class="container px-5">
+		<div class="row">
+			<div class="col-md-12 col-xl-12">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form id="edit-form" action=""  method="post" class="bg-success-subtle my-4 p-4">
+                <h3 class='mb-3'>Edit Expense</h3>
+                <div class="form-group mt-2 mb-3">
+                    <label for="name" class="form-label text-black">Category Name</label>
+                    <input type="text" value="{{expense.category}}" name="category" class="form-control field-name" placeholder="Category name">
+                </div>
+
+                <div class="form-group mt-2 mb-3">
+                    <label for="amount" class="form-label text-black">Amount</label>
+                    <input type="number" value="{{expense.amount}}" name="amount"  class="form-control field-amount" step=".01" placeholder="Amount">
+                </div>
+                <!--
+                    <div class="form-group mt-2 mb-3">
+                        <div class="form-group mt-2 mb-0">
+                            <label for="budget-select" class="form-label text-black">Select Budget</label>
+                            <select name="budget-select" title="budget-select" id="budget-select" class="form-select field-rank">
+                                {% for budget in budgets %}
+                                    <option value="{{budget.id}}" {% if expense.budget_id == budget.id %} selected{% endif %}>{{budget.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                -->
+                <div class="row">
+                    <div class="col-12 col-lg-12 mt-2">
+                        <button type="submit" id="update_expense" name="update_expense" class="btn btn-lg btn-success">Update</button>
+                    </div>
+                </div>
+            </form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

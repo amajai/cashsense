@@ -1,0 +1,49 @@
+<section id="contact">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-6">
+                <div class="section-title text-center">
+                    <h3>Get In Touch</h3>
+                    <p>Contact Us.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-12">
+                <form id="contact-form" action="php/contact.php" method="post"> 
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2 mb-3">
+                                <input type="text" name="name" class="form-control field-name" placeholder="Name">
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-group mt-2 mb-3">
+                                <input type="email" name="email" class="form-control field-email" placeholder="Email">
+                            </div>
+                        </div>                                
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="form-group mt-2 mb-3">
+                                <input type="text" name="subject" class="form-control field-subject" placeholder="Subject">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="form-group mt-2 mb-3">
+                                <textarea name="message" rows="4" class="form-control field-message" placeholder="Message"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-12 mt-2">
+                            <button type="submit" id="contact-submit" name="send" class="btn btn-success">Send Message</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

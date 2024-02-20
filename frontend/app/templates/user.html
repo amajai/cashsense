@@ -1,0 +1,67 @@
+{% extends 'dashboard_base.html' %}
+{% set active_page = "users" %}
+{% block title %}User{% endblock %}
+
+
+{% block content %}
+	<div class="container px-5">
+		<div class="row">
+			<div class="col-md-12 col-xl-12">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form id="edit-form" action=""  method="post" class="bg-success-subtle my-4 p-4">
+                <h3 class='mb-3'>Edit Details</h3>
+                <div class="form-group mt-2 mb-3">
+                    <label for="firstname" class="form-label text-black">First name</label>
+                    <input type="text" name="firstname" value="{{user.firstname}}" class="form-control field-firstname" placeholder="First name" required>
+                </div>
+
+                <div class="form-group mt-2 mb-3">
+                    <label for="lastname" class="form-label text-black">Last name</label>
+                    <input type="text" name="lastname" value="{{user.lastname}}"  class="form-control field-lastname" placeholder="Last name">
+                </div>
+                <div class="form-group mt-2 mb-3">
+                    <label for="email" class="form-label text-black">Email</label>
+                    <input type="email" name="email" value="{{user.email}}"  class="form-control field-email" placeholder="Email" required disabled>
+                </div>
+                <!--
+                    <div class="form-group mt-2 mb-0">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="rank-select" class="form-label text-black">Rank Select</label>
+                              </div>
+                              <div class="col-auto">
+                                <select value="1" name="rank" title="rank-select" id="rank-select" class="form-select field-rank">
+                                    <option value="0" {% if user.rank == 0 %} selected{% endif %}>User</option>
+                                    <option value="1" {% if user.rank == 1 %} selected{% endif %}>Admin</option>
+                                </select>
+                              </div>
+                        </div>
+                    </div>
+                -->
+                <div class="form-group mt-2 mb-3">
+                    <label for="password1" class="form-label text-black">Password</label>
+                    <input type="password" name="password1" class="form-control field-password" placeholder="Password">
+                </div> 
+                <div class="form-group mt-2 mb-3">
+                    <label for="password2" class="form-label text-black">Confirm Password</label>
+                    <input type="password" name="password2" class="form-control field-password" placeholder="Confirm Password">
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-12 mt-2">
+                        <button type="submit" id="signup" name="signup" class="btn btn-lg btn-success">Update</button>
+                    </div>
+                </div>
+            </form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'dashboard_base.html' %}
+{% set active_page = "users" %}
+{% block title %}Users{% endblock %}
+
+
+{% block content %}
+	<div class="container px-5">
+		<div class="row stat-cards">
+			<div class="col-md-12 col-xl-12">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+			  <article class="stat-cards-item table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th colspan="10">Total Users: {{users|count}}</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Email</th>
+                            <th>Rank</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{user.id}}</td>
+                            <td>{{user.firstname}}</td>
+                            <td>{{user.lastname}}</td>
+                            <td>{{user.email}}</td>
+                            <td>
+                                {% if user.rank > 0 %}
+                                <i class="bi bi-key-fill text-warning pe-2"></i>
+                                    Admin
+                                {% else %}
+                                    <i class="bi bi-person-fill pe-2 text-success"></i>
+                                    User
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{url_for('users')}}/{{user.id}}">
+                                    <i class="bi bi-pencil-square text-info pe-2"></i>
+                                </a>
+                                
+                                <a href="{{url_for('user_delete', id=user.id)}}" class="pe-auto">
+                                    <i class="bi bi-trash3 text-danger pe-2"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+  
+                    </tfoot>
+                </table>
+			  </article>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
