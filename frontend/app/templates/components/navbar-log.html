@@ -1,0 +1,76 @@
+<header id="top-page" class="header py-3 bg-success">
+	<!-- Main menu -->
+	<div id="mainNav" class="main-menu-area">
+		<div class="container">
+			<div class="row align-items-center">						
+				<div class="col-12 col-lg-2 d-flex justify-content-between align-items-center">
+					<div class="logo">
+						<a class="navbar-brand navbar-brand1" href="{{url_for('home')}}">
+							<img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CashSense" data-rjs="2" />
+						</a>
+						<a class="navbar-brand navbar-brand2" href="{{url_for('home')}}">
+							<img src="{{ url_for('static', filename='images/logo.png') }}" alt="CashSense" data-rjs="2" />
+						</a>
+					</div>
+					
+					<div class="menu-bar d-lg-none">
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+				</div>
+				
+				<div class="op-mobile-menu col-lg-10 p-0 d-lg-flex align-items-center justify-content-end">
+					<div class="m-menu-header d-flex justify-content-between align-items-center d-lg-none">
+						<a href="#" class="logo">
+							<img src="{{ url_for('static', filename='images/logo.png') }}" alt="CashSense" data-rjs="2" />
+						</a>
+						<span class="close-button"></span>
+					</div>
+					<!-- Items -->
+					<ul class="nav-menu d-lg-flex flex-wrap list-unstyled justify-content-center">
+						<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="{{ url_for('home') }}#top-page">
+								<span>Home</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="{{ url_for('home') }}#features">
+								<span>Features</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="{{ url_for('home') }}#screenshots">
+								<span>Screenshots</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="{{ url_for('home') }}#support">
+								<span>Support</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link js-scroll-trigger" href="{{ url_for('home') }}#contact">
+								<span>Contact</span>
+							</a>
+						</li>
+                        {% if session['logged_in'] %}
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-light" href="{{url_for('dashboard')}}">
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        {% else %}
+						<li class="mx-5">
+						<li class="nav-item">
+							<a class="nav-link" href="{{ link_url }}">
+								<span>{{ link_name }}</span>
+							</a>
+						</li>
+                        {% endif %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>

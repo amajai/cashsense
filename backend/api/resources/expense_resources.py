@@ -5,6 +5,7 @@ from api.models.budget_models import Budget
 from api.models.expense_models import Expense
 from api import db
 from flask_login import current_user, login_required
+from api.resources.budget_resources import budget_fields
 
     
 expense_fields = {
@@ -16,6 +17,34 @@ expense_fields = {
     'created_at': fields.DateTime,
     'updated_at': fields.DateTime
 }
+
+class AllBudgetsAndCorrespondingExpenses(Resource):
+    """/users/id/budgets-expenses route handler"""
+    @login_required
+    def get(self, id):
+        """GET /users/id/budgets-expenses"""
+        try:
+            if current_user.id == id or current_user.rank == 1:
+                budgets = Budget.query.filter_by(user_id=id).all()
+                if budgets:
+                    # Use marshal to serialize the budgets and their corresponding expenses
+                    serialized_data = []
+                    for budget in budgets:
+                        expenses = Expense.query.filter_by(user_id=id, budget_id=budget.id).all()
+                        serialized_data.append({
+                            'budget': marshal(budget, budget_fields),
+                            'expenses': marshal(expenses, expense_fields)
+                        })
+                    return {'message': 'Successful', 'data': serialized_data}
+                else:
+                    return {'message': 'No budgets found for the user'}, 404
+            else:
+                return {'message': "You do not have permission to perform this operation"}, 403
+           
+        except Exception as err:
+            print(err)
+            return {'message': 'Something went wrong, try again!'}, 500
+
 
 class AllBudgetExpenses(Resource):
     """/users/id/budgets/budget_id/expenses route handler"""

@@ -4,7 +4,8 @@ from api.models.user_models import User
 from api import db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
-                               unset_jwt_cookies, jwt_required, JWTManager
+                               unset_jwt_cookies, jwt_required
+
 from flask import jsonify
 from api import app
 from datetime import datetime, timedelta, timezone
@@ -129,7 +130,6 @@ class AllUsers(Resource):
             return {'message': 'Something went wrong, try again!'}, 500
         
 
-    
 class Users(Resource):
     """/users/<int:id> route handler"""
     @login_required

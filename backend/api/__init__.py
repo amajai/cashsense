@@ -21,7 +21,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
-
+app.config["PROPAGATE_EXCEPTIONS"] = True
 
 # Initialize SQLAlchemy without tying it to an app
 db = SQLAlchemy()

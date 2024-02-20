@@ -1,0 +1,42 @@
+<footer>
+    <div class="footer-widgets">
+        <div class="container">
+            <div class="row">
+                <!-- Footer logo -->
+                <div class="col-12 col-md-6 col-lg-4 res-margin">
+                    <div class="widget">
+                        <p class="footer-logo">
+                            <img src="{{ url_for('static', filename='images/logo-white.png') }}" alt="CashSense" data-rjs="2">
+                        </p>
+                        <p>
+                            Say goodbye to financial stress and hello to financial freedom with CashSense! We understand the importance of managing your expenses, and that's why we've created the perfect solution for you.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg res-margin offset-lg-3">
+                    <div class="widget">
+                        <h6> Links</h6>
+                        <ul class="footer-menu">
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="{{url_for('login')}}">Login</a></li>
+                            <li><a href="{{url_for('signup')}}">Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">				
+        <div class="container">
+            <div class="row">						
+                <div class="col-12">
+                    <p class="copyright text-center">
+                        Copyright © 2023 CashSense<a href="#" target="_blank"></a>. All Rights Reserved.
+                    </p>
+                </div>
+            </div>
+        </div>				
+    </div>
+</footer>
