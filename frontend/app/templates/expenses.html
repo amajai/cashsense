@@ -1,0 +1,140 @@
+{% extends 'dashboard_base.html' %} {% set active_page = "expenses" %} 
+{% block title %}Expense{% endblock %}
+
+{% block content %}
+<div class="container px-5">
+  <div class="row stat-cards">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% for pairs in data %}
+    <div class="col-md-12 col-xl-12">
+      <article class="stat-cards-item table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>
+                Budget Name:
+                <span class="fw-normal fst-italic">{{pairs.budget.name}}</span>
+              </th>
+              <th colspan="3">
+                Budget Amount:
+                <span class="fw-normal fst-italic text-success"
+                  >{{"₦{:,.2f}".format(pairs.budget.amount)}}</span
+                >
+              </th>
+            </tr>
+          </thead>
+          <thead>
+            <tr>
+              <th colspan="3" class="text-center">Expenses</th>
+            </tr>
+            {% if pairs.expenses %}
+            <tr>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Edit</th>
+            </tr>
+            {% endif %}
+          </thead>
+          {% if pairs.expenses %}
+          <tbody>
+            {% for expense in pairs.expenses %}
+            <tr>
+              <td>{{expense.category}}</td>
+              <td>{{"₦{:,.2f}".format(expense.amount)}}</td>
+              <td>
+                <a href="{{url_for('expense_edit', budget_id=pairs.budget.id, expense_id=expense.id)}}">
+                  <i class="bi bi-pencil-square text-info pe-2"></i>
+                </a>
+
+                <a href="{{url_for('expense_delete', budget_id=pairs.budget.id, expense_id=expense.id)}}" class="pe-auto">
+                  <i class="bi bi-trash3 text-danger pe-2"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          {% else %}
+          <tbody class="table-warning">
+            <tr>
+              <td colspan="3" class="text-center py-4">No Expenses</td>
+            </tr>
+          </tbody>
+          {% endif %}
+        </table>
+      </article>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{title}}</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="category" class="form-label">Category:</label>
+            <input
+              type="text"
+              class="form-control"
+              id="category"
+              placeholder="Enter category"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="amount" class="form-label">Amount:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="amount"
+              placeholder="Enter amount"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block btns %}
+<div class="d-flex">
+	<a href="{{url_for('expense_add')}}" class="btn btn-dark me-2 text-white">
+		ADD
+	</a>
+</div>
+{% endblock %}

@@ -14,21 +14,15 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url_for('transactions')}}" class="nav-link {{ 'active' if active_page == 'transactions' else '' }}">
-                <i class="bi bi-arrow-down-up pe-2"></i>
-                Transactions
-            </a>
-        </li>
-        <li class="nav-item">
             <a href="{{url_for('budgets')}}" class="nav-link {{ 'active' if active_page == 'budgets' else '' }}">
                 <i class="bi bi-wallet-fill pe-2"></i>
                 Budgets
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{url_for('expense')}}" class="nav-link {{ 'active' if active_page == 'expense' else '' }}">
+            <a href="{{url_for('expenses')}}" class="nav-link {{ 'active' if active_page == 'expenses' else '' }}">
                 <i class="bi bi-cash-coin pe-2"></i>
-                Expense
+                Expenses
             </a>
         </li>
         {% if session['current_user']['rank'] == 1 %}

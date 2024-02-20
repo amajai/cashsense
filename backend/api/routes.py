@@ -21,4 +21,3 @@ api.add_resource(Budgets, '/users/<int:id>/budgets/<int:budget_id>', endpoint = 
 api.add_resource(AllBudgetsAndCorrespondingExpenses, '/users/<int:id>/budgets-expenses', endpoint = 'budgets-expenses', strict_slashes=False)
 api.add_resource(AllBudgetExpenses, '/users/<int:id>/budgets/<int:budget_id>/expenses', endpoint = 'expenses', strict_slashes=False)
 api.add_resource(Expenses, '/users/<int:id>/budgets/<int:budget_id>/expenses/<int:expense_id>', endpoint = 'expense', strict_slashes=False)
-api.add_resource(Dashboard, '/dashboard', strict_slashes=False)

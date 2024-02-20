@@ -25,9 +25,16 @@ user_fields = {
 
 class Default(Resource):
     """Api home route handler (/)"""
+    @login_required
     def get(self):
         """GET / """
-        return {"message": "Welcome to CashSense API"}
+        if current_user.is_authenticated:
+            return {"message": "Welcome to CashSense API"}
+        else:
+            response = jsonify({'error': 'Unauthorized'})
+            response.status_code = 401
+            return response
+
 
 class UserRegistration(Resource):
     """/register route handler"""
@@ -59,22 +66,7 @@ class UserRegistration(Resource):
             return {'message': 'User registered successfully', 'data': data }, 201
         except Exception as err:
             return {'message': 'An error occured, ensure you are using the right keys, datatypes and your request body is properly formatted'}, 400
-        
-@app.after_request
-def refresh_expiring_jwts(response):
-    try:
-        exp_timestamp = get_jwt()["exp"]
-        now = datetime.now(timezone.utc)
-        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-        if target_timestamp > exp_timestamp:
-            access_token = create_access_token(identity=get_jwt_identity())
-            data = response.get_json()
-            if type(data) is dict:
-                data["access_token"] = access_token 
-                response.data = json.dumps(data)
-        return response
-    except (RuntimeError, KeyError):
-        return response
+
 
 class UserLogin(Resource):
     """/login route handler"""
@@ -93,8 +85,7 @@ class UserLogin(Resource):
         if bcrypt.check_password_hash(user.password, data['password']):
             login_user(user)
             user = marshal(user, user_fields)
-            access_token = create_access_token(identity=data['email'])
-            return {'message': 'Login successful', 'data': user, "access_token":access_token}
+            return {'message': 'Login successful', 'data': user}
         else:
             return {'message': 'Invalid credentials'}, 400
         

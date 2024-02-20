@@ -5,7 +5,7 @@ import requests
 import os
 from requests.exceptions import RequestException
 from dotenv import load_dotenv
-import atexit
+from datetime import datetime
 
 
 load_dotenv()
@@ -30,11 +30,8 @@ def login():
             response = s.post(f'{BACKEND_URL}/login', json=data_login)
             data = response.json()
             if response.status_code == 200:
-                session['logged_in'] = True
                 session['current_user'] = data.get('data') 
-                s.cookies.set('token', data['access_token'])
                 response = make_response(redirect(url_for('dashboard')))
-                response.set_cookie('token', data['access_token'])
                 return response
             else:
                 flash(response.json().get('message'), 'danger')
@@ -43,8 +40,8 @@ def login():
             flash(str(e), 'danger')
             return redirect(url_for('login'))
     else:
-        if session.get('logged_in', None):
-            return redirect(url_for('dashboard'))
+        if 'current_user' in session:
+            return redirect(url_for('dashboard')) 
         url = url_for('signup')
         name = 'Sign Up'
         return render_template('login.html', link_url=url, link_name=name)
@@ -56,11 +53,7 @@ def logout():
     response = s.post(f'{BACKEND_URL}/logout')
     if response.status_code == 200:
         response = make_response(redirect(url_for('home')))
-        response.delete_cookie('token') 
-        response.set_cookie('session', '', expires=0)
-        session.clear()
-        s.cookies.clear_session_cookies()
-        s.cookies.clear_expired_cookies()
+        session.pop('current_user', None)
         return response
     else:
         flash("You are already logged out!", 'warning')
@@ -100,8 +93,8 @@ def signup():
             flash(str(e), 'danger')
             return redirect(url_for('signup'))
     else:
-        if session.get('logged_in', None):
-            return redirect(url_for('dashboard'))
+        if 'current_user' in session:
+                return redirect(url_for('dashboard'))
         url = url_for('login')
         name = 'Login'
         return render_template('signup.html', link_url=url, link_name=name)
@@ -109,38 +102,14 @@ def signup():
 
 @app.route('/dashboard')
 def dashboard():
-    token = request.cookies.get('token')
-    headers = {'Authorization': f'Bearer {token}'}
-    response = s.get(f'{BACKEND_URL}/dashboard', headers=headers)
+    response = s.get(f'{BACKEND_URL}')
     if response.status_code == 200:
         title = 'Dashboard'
         return render_template('dashboard.html', title=title)
     else:
         response = make_response(redirect(url_for('login')))
-        response.delete_cookie('token') 
-        response.set_cookie('session', '', expires=0)
-        session.clear()
-        s.cookies.clear_session_cookies()
-        s.cookies.clear_expired_cookies()
+        session.pop('current_user', None)
         return response
-
-
-@app.route('/dashboard/budgets')
-def budgets():
-    title = 'Budgets'
-    return render_template('budgets.html', title=title)
-
-
-@app.route('/dashboard/transactions')
-def transactions():
-    title = 'Transactions'
-    return render_template('transactions.html', title=title)
-
-
-@app.route('/dashboard/expense')
-def expense():
-    title = 'Expense'
-    return render_template('expense.html', title=title)
 
 
 @app.route('/dashboard/users', methods=['GET'])
@@ -198,10 +167,8 @@ def user(id):
 
 @app.route('/dashboard/users/<int:id>/delete', methods=['GET', 'POST'])
 def user_delete(id):
-    print('r', request.method )
     if request.method == 'POST':
         response = s.delete(f'{BACKEND_URL}/users/{id}')
-        print(response.json())
         if response.status_code == 200:
             flash(response.json().get('message'), 'success')
             return redirect(url_for('users'))
@@ -211,9 +178,261 @@ def user_delete(id):
     else:
         response = s.get(f'{BACKEND_URL}/users/{id}')
         if response.status_code == 200:
-            title = 'Delete'
+            title = 'Delete User'
             user = response.json().get('data')
-            return render_template('delete.html', title=title, user=user)
+            return render_template('user_delete.html', title=title, user=user)
         else:
             flash(response.json().get('message'), 'danger')
             return redirect(url_for('users'))
+
+
+@app.route('/dashboard/budgets', methods=['GET'])
+def budgets():
+    id = session['current_user']['id']
+    response = s.get(f'{BACKEND_URL}/users/{id}/budgets')
+    if response.status_code == 200:
+        title = 'Budgets'
+        budgets = response.json().get('data')
+        sorted_budgets = sorted(budgets, key=lambda d: d['id'], reverse=True)
+        return render_template('budgets.html', title=title, budgets=sorted_budgets)
+    elif response.status_code == 401:
+        return redirect(url_for('dashboard'))
+    else:
+        flash(response.json().get('message'), 'danger')
+        return redirect(request.url)
+
+
+@app.route('/dashboard/budgets/add', methods=['GET', 'POST'])
+def add_budget():
+    id = session['current_user']['id']
+    if request.method == 'POST':
+        name = request.form.get('name')
+        amount = request.form.get('amount')
+        start_date = request.form.get('start_date')
+        end_date = request.form.get('end_date')
+
+        start_date_datefrmt = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date_datefrmt = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+        if start_date_datefrmt >= end_date_datefrmt:
+            flash("Start Date cannot be greater than End Date", 'warning')
+            return redirect(request.url)
+
+        data_budget = {
+            'name': name,
+            'amount': amount,
+            'start_date': start_date_datefrmt.strftime('%d/%m/%Y'),
+            'end_date': end_date_datefrmt.strftime('%d/%m/%Y'),
+        }
+
+        response = s.post(f'{BACKEND_URL}/users/{id}/budgets', json=data_budget)
+        if response.status_code == 201:
+            flash(response.json().get('message'), 'success')
+            return redirect(url_for('budgets'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+    else:
+        response = s.get(f'{BACKEND_URL}/users/{id}/budgets')
+        if response.status_code == 200:
+            title = 'Add Budget'
+            budgets = response.json().get('data')
+            return render_template('budget_add.html', title=title, budgets=budgets)
+        elif response.status_code == 401:
+            return redirect(url_for('dashboard'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+
+
+@app.route('/dashboard/budgets/<int:budget_id>', methods=['GET', 'POST'])
+def edit_budget(budget_id):
+    id = session['current_user']['id']
+    if request.method == 'POST':
+        name = request.form.get('name')
+        amount = request.form.get('amount')
+        start_date = request.form.get('start_date')
+        end_date = request.form.get('end_date')
+
+        start_date_datefrmt = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date_datefrmt = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+        if start_date_datefrmt >= end_date_datefrmt:
+            flash("Start Date cannot be greater than End Date", 'warning')
+            return redirect(request.url)
+
+        data_budget = {
+            'name': name,
+            'amount': amount,
+            'start_date': start_date_datefrmt.strftime('%d/%m/%Y'),
+            'end_date': end_date_datefrmt.strftime('%d/%m/%Y'),
+        }
+        response = s.put(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}', json=data_budget)
+        if response.status_code == 200:
+            flash(response.json().get('message'), 'success')
+            return redirect(url_for('budgets'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+    else:
+        response = s.get(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}')
+        if response.status_code == 200:
+            title = 'Edit Budget'
+            budget = response.json().get('data')
+            return render_template('budget_edit.html', title=title, budget=budget)
+        elif response.status_code == 401:
+            return redirect(url_for('dashboard'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+
+
+@app.route('/dashboard/budgets/<int:budget_id>/delete', methods=['GET', 'POST'])
+def delete_budget(budget_id):
+    id = session['current_user']['id']
+    if request.method == 'POST':
+        response = s.delete(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}')
+        if response.status_code == 200:
+            flash(response.json().get('message'), 'success')
+            return redirect(url_for('budgets'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(url_for('budgets'))
+    else:
+        response = s.get(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}')
+        if response.status_code == 200:
+            title = 'Delete Budget'
+            budget = response.json().get('data')
+            return render_template('budget_delete.html', title=title, budget=budget)
+        elif response.status_code == 401:
+            return redirect(url_for('dashboard'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(url_for('budgets'))
+
+
+@app.route('/dashboard/expenses', methods=['GET'])
+def expenses():
+    if 'current_user' in session:
+        id = session['current_user']['id']
+    else:
+        return redirect(url_for('dashboard'))
+    res = s.get(f'{BACKEND_URL}/users/{id}/budgets-expenses')
+
+    if not res.json().get('data'):
+        return redirect(url_for('dashboard'))
+    
+    budget_totals = {}
+
+    if res.status_code == 200:
+        data = res.json().get('data')
+        for pairs in data:
+            if pairs['expenses']:
+                total = 0
+                for expense in pairs['expenses']:
+                    total += float(expense['amount'])
+                budget_totals[pairs['budget']['id']] = total
+            else:
+                budget_totals[pairs['budget']['id']] = 0
+        title = 'Expenses'
+        return render_template('expenses.html', title=title, data=data)
+    elif res.status_code == 401:
+        return redirect(url_for('dashboard'))
+    else:
+        flash(res.json().get('message'), 'danger')
+        return redirect(request.url)
+
+
+@app.route('/dashboard/expenses/add', methods=['GET', 'POST'])
+def expense_add():
+    if 'current_user' in session:
+        id = session['current_user']['id']
+    else:
+        return redirect(url_for('dashboard'))
+    if request.method == 'POST':
+        category = request.form.get('category')
+        amount = request.form.get('amount')
+        budget_id = request.form.get('budget-select')
+        data_expense = {
+            'category': category,
+            'amount': amount,
+        }
+        response = s.post(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}/expenses', json=data_expense)
+        if response.status_code == 201:
+            flash(response.json().get('message'), 'success')
+            return redirect(url_for('expenses'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+    else:
+        response = s.get(f'{BACKEND_URL}/users/{id}/budgets')
+        if response.status_code == 200:
+            title = 'Add Expense'
+            budgets = response.json().get('data')
+            return render_template('expense_add.html', title=title, budgets=budgets)
+        elif response.status_code == 404:
+            flash(response.json().get('message'), 'danger')
+            return redirect(url_for('expenses'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(url_for('dashboard'))
+
+
+@app.route('/dashboard/budget/<int:budget_id>/expenses/<int:expense_id>', methods=['GET', 'POST'])
+def expense_edit(budget_id, expense_id):
+    if 'current_user' in session:
+        id = session['current_user']['id']
+    else:
+        return redirect(url_for('dashboard'))
+    if request.method == 'POST':
+        category = request.form.get('category')
+        amount = request.form.get('amount')
+        data_expense = {
+            'category': category,
+            'amount': amount,
+        }
+
+        response = s.put(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}/expenses/{expense_id}', json=data_expense)
+        if response.status_code == 200:
+            flash(response.json().get('message'), 'success')
+            return redirect(url_for('expenses'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+    else:
+        response = s.get(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}/expenses/{expense_id}')
+        if response.status_code == 200:
+            title = 'Edit Expense'
+            expense = response.json().get('data')
+            budgets = s.get(f'{BACKEND_URL}/users/{id}/budgets').json().get('data')
+            return render_template('expense_edit.html', title=title, expense=expense, budgets=budgets)
+        elif response.status_code == 401:
+            return redirect(url_for('expenses'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(request.url)
+
+
+@app.route('/dashboard/budget/<int:budget_id>/expenses/<int:expense_id>/delete', methods=['GET', 'POST'])
+def expense_delete(budget_id, expense_id):
+    if 'current_user' in session:
+        id = session['current_user']['id']
+    else:
+        return redirect(url_for('dashboard'))
+    if request.method == 'POST':
+        response = s.delete(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}/expenses/{expense_id}')
+        if response.status_code == 200:
+            flash(response.json().get('message'), 'success')
+            return redirect(url_for('expenses'))
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(url_for('expenses'))
+    else:
+        response = s.get(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}/expenses/{expense_id}')
+        if response.status_code == 200:
+            title = 'Delete Expense'
+            expense = response.json().get('data')
+            return render_template('expense_delete.html', title=title, expense=expense)
+        else:
+            flash(response.json().get('message'), 'danger')
+            return redirect(url_for('expenses'))
