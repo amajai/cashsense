@@ -1,0 +1,57 @@
+{% extends 'dashboard_base.html' %}
+{% set active_page = "transactions" %}
+{% block title %}Transactions{% endblock %}
+
+
+{% block content %}
+	<div class="container px-5">
+		<div class="row stat-cards">
+			<div class="col-md-12 col-xl-12">
+			  <article class="stat-cards-item">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="expense">
+                            <td>1</td>
+                            <td>2024-02-15</td>
+                            <td>Shopping</td>
+                            <td class='text-danger'>-$50.00</td>
+                        </tr>
+                        <tr class="expense">
+                            <td>2</td>
+                            <td>2024-02-14</td>
+                            <td>Restaurant</td>
+                            <td class='text-danger'>-$30.00</td>
+                        </tr>
+                        <tr class="expense">
+                            <td>3</td>
+                            <td>2024-02-12</td>
+                            <td>Gasoline</td>
+                            <td class='text-danger'>-$40.00</td>
+                        </tr>
+                        <tr class="income">
+                            <td>4</td>
+                            <td>2024-02-10</td>
+                            <td>Salary</td>
+                            <td class='text-success'>$1000.00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Total</th>
+                            <th>$880.00</th>
+                        </tr>
+                    </tfoot>
+                </table>
+			  </article>
+			</div>
+		</div>
+	</div>
+{% endblock %}

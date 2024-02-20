@@ -1,6 +1,9 @@
 .vscode/
 backend/venv
+backend/.venv
 backend/instance
 backend/api/__pycache__
+backend/__pycache__
 backend/api/models/__pycache__
 backend/api/resources/__pycache__
+backend/.env

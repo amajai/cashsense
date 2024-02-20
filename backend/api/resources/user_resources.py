@@ -3,7 +3,13 @@ from flask_restful import Resource, reqparse, fields, marshal
 from api.models.user_models import User
 from api import db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
+                               unset_jwt_cookies, jwt_required
 
+from flask import jsonify
+from api import app
+from datetime import datetime, timedelta, timezone
+import json
 
 user_fields = {
     'id': fields.Integer,
@@ -54,6 +60,21 @@ class UserRegistration(Resource):
         except Exception as err:
             return {'message': 'An error occured, ensure you are using the right keys, datatypes and your request body is properly formatted'}, 400
         
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["access_token"] = access_token 
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        return response
 
 class UserLogin(Resource):
     """/login route handler"""
@@ -72,7 +93,8 @@ class UserLogin(Resource):
         if bcrypt.check_password_hash(user.password, data['password']):
             login_user(user)
             user = marshal(user, user_fields)
-            return {'message': 'Login successful', 'data': user}
+            access_token = create_access_token(identity=data['email'])
+            return {'message': 'Login successful', 'data': user, "access_token":access_token}
         else:
             return {'message': 'Invalid credentials'}, 400
         
@@ -80,9 +102,11 @@ class UserLogin(Resource):
 class UserLogout(Resource):
     """/logout route handler"""
     @login_required
-    def get(self):
+    def post(self):
         logout_user()
-        return {'message': 'Logged out Successfully'}
+        res = jsonify({'message': 'Logged out Successfully'})
+        unset_jwt_cookies(res)
+        return res
     
 
 class AllUsers(Resource):
@@ -106,7 +130,6 @@ class AllUsers(Resource):
             return {'message': 'Something went wrong, try again!'}, 500
         
 
-    
 class Users(Resource):
     """/users/<int:id> route handler"""
     @login_required

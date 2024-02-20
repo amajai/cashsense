@@ -1,0 +1,49 @@
+<aside class="d-flex flex-column p-3 text-white bg-white sidemenu">
+    <div class="d-flex justify-content-between">
+        <h4 class="fs-4 text-success">CashSense</h4>
+        <div class="sidebar-toggle" id="sidebar-toggle">
+            <i class="bi bi-list text-success fs-6"></i>
+        </div>
+    </div>
+    <hr class="text-success">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="{{url_for('dashboard')}}" class="nav-link {{ 'active' if active_page == 'dashboard' else '' }}">
+                <i class="bi bi-house-fill pe-2"></i>
+                Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{url_for('transactions')}}" class="nav-link {{ 'active' if active_page == 'transactions' else '' }}">
+                <i class="bi bi-arrow-down-up pe-2"></i>
+                Transactions
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{url_for('budgets')}}" class="nav-link {{ 'active' if active_page == 'budgets' else '' }}">
+                <i class="bi bi-wallet-fill pe-2"></i>
+                Budgets
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{{url_for('expense')}}" class="nav-link {{ 'active' if active_page == 'expense' else '' }}">
+                <i class="bi bi-cash-coin pe-2"></i>
+                Expense
+            </a>
+        </li>
+        {% if session['current_user']['rank'] == 1 %}
+        <li class="nav-item">
+            <a href="{{url_for('users')}}" class="nav-link {{ 'active' if active_page == 'users' else '' }}">
+                <i class="bi bi-people-fill pe-2"></i>
+                Users
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+    <hr class="text-success">
+ 
+    <a href="{{url_for('logout')}}" role="button" class="btn btn-success">
+        <i class="bi bi-box-arrow-left"></i>
+        Logout
+    </a>
+</aside>

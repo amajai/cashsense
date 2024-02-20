@@ -5,6 +5,7 @@ from api.resources.user_resources import Default, UserRegistration, UserLogin, U
 from api.resources.budget_resources import AllUserBudgets, Budgets
 from api.resources.expense_resources import AllBudgetsAndCorrespondingExpenses, AllBudgetExpenses, Expenses
 
+
 api = Api(app_views)
 
 api.add_resource(Default, '/', strict_slashes=False)
@@ -20,3 +21,4 @@ api.add_resource(Budgets, '/users/<int:id>/budgets/<int:budget_id>', endpoint = 
 api.add_resource(AllBudgetsAndCorrespondingExpenses, '/users/<int:id>/budgets-expenses', endpoint = 'budgets-expenses', strict_slashes=False)
 api.add_resource(AllBudgetExpenses, '/users/<int:id>/budgets/<int:budget_id>/expenses', endpoint = 'expenses', strict_slashes=False)
 api.add_resource(Expenses, '/users/<int:id>/budgets/<int:budget_id>/expenses/<int:expense_id>', endpoint = 'expense', strict_slashes=False)
+api.add_resource(Dashboard, '/dashboard', strict_slashes=False)
