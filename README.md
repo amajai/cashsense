@@ -29,7 +29,7 @@ To run the application locally, follow these steps:
 git clone https://github.com/zibxto/cashsense.git
 cd cashsense
 
-# Install dependencies
+# Install dependencies for both frontend and backend
 pip install -r requirements.txt
 
 # Set up environment variables
