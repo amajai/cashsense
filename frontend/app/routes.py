@@ -12,13 +12,20 @@ load_dotenv()
 BACKEND_URL = "{}".format(os.getenv('BACKEND_URL'))
 s = requests.Session() # manage server-side cookies
 
-def check_session(route):
-    def wrapper_func():
-        response = s.get(f'{BACKEND_URL}')
-        if response.status_code != 200:
-            return redirect(url_for('login')) 
-        route()
-    return wrapper_func
+def daytime_countdown(start_date_str, end_date_str):
+    try:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
+        if end_date < start_date:
+            return None
+
+        time_difference = end_date - start_date
+        days = time_difference.days
+        countdown_str = f"{days} days"
+        return countdown_str
+    except Exception as e:
+        return e
 
 @app.route('/')
 def home():
@@ -109,10 +116,48 @@ def signup():
 
 @app.route('/dashboard')
 def dashboard():
+    id = session['current_user']['id']
     response = s.get(f'{BACKEND_URL}')
     if response.status_code == 200:
+        res = s.get(f'{BACKEND_URL}/users/{id}/budgets-expenses')
+        if res.json().get('data'):
+            data = {}
+            budget_expenses = res.json().get('data')
+            overall_budget = 0
+            overall_expense = 0
+            budget_count = 0
+            expense_count = 0
+            budgets = []
+            for pairs in budget_expenses:
+                budget_count += 1
+                overall_budget += pairs['budget']['amount']
+                budget = pairs['budget']
+                if pairs['expenses']:
+                    expense_count += 1
+                    current_total_expense = 0
+                    for expense in pairs['expenses']:
+                        current_total_expense += expense['amount']
+                    budget['total_expense'] = current_total_expense
+                    overall_expense += current_total_expense
+                else:
+                    budget['total_expense'] = 0
+                budget['remaining_days'] = daytime_countdown(pairs['budget']['start_date'], pairs['budget']['end_date'])
+                budgets.append(budget)
+            data['overall_budget'] = overall_budget
+            data['overall_expense'] = overall_expense
+            data['budget_count'] = budget_count
+            data['expense_count'] = expense_count
+            data['budgets'] = budgets
+        else:
+            data = {
+                'overall_budget': 0,
+                'overall_expense': 0,
+                'budget_count': 0,
+                'expense_count': 0,
+                'budgets': []
+            }
         title = 'Dashboard'
-        return render_template('dashboard.html', title=title)
+        return render_template('dashboard.html', title=title, data=data)
     else:
         response = make_response(redirect(url_for('login')))
         session.pop('current_user', None)
@@ -369,6 +414,7 @@ def expenses():
 
 @app.route('/dashboard/expenses/add', methods=['GET', 'POST'])
 def expense_add():
+    id = session['current_user']['id']
     response = s.get(f'{BACKEND_URL}')
     if response.status_code != 200:
         return redirect(url_for('login')) 
@@ -403,6 +449,7 @@ def expense_add():
 
 @app.route('/dashboard/budget/<int:budget_id>/expenses/<int:expense_id>', methods=['GET', 'POST'])
 def expense_edit(budget_id, expense_id):
+    id = session['current_user']['id']
     response = s.get(f'{BACKEND_URL}')
     if response.status_code != 200:
         return redirect(url_for('login')) 
@@ -437,6 +484,7 @@ def expense_edit(budget_id, expense_id):
 
 @app.route('/dashboard/budget/<int:budget_id>/expenses/<int:expense_id>/delete', methods=['GET', 'POST'])
 def expense_delete(budget_id, expense_id):
+    id = session['current_user']['id']
     response = s.get(f'{BACKEND_URL}')
     if response.status_code != 200:
         return redirect(url_for('login')) 

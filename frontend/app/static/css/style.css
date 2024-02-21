@@ -3274,7 +3274,7 @@ footer .copyright a {
     font-size: 18px;
     line-height: 1.22;
     color: #171717;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .stat-cards-info__title {
@@ -3351,4 +3351,11 @@ p.stat-cards-info__progress {
 
 .table-scroll {
     overflow-x: auto;
+}
+
+.progress {
+    height: 14px;
+    border-radius: 0;
+    margin-bottom: 30px;
+    background-color:#41a776;
 }
