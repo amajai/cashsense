@@ -140,7 +140,6 @@ def dashboard():
                     budget['total_expense'] = current_total_expense
                     overall_expense += current_total_expense
                 else:
-
                     budget['total_expense'] = 0
                 budget['remaining_days'] = daytime_countdown(pairs['budget']['start_date'], pairs['budget']['end_date'])
                 budgets.append(budget)
