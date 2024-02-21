@@ -12,6 +12,13 @@ load_dotenv()
 BACKEND_URL = "{}".format(os.getenv('BACKEND_URL'))
 s = requests.Session() # manage server-side cookies
 
+def check_session(route):
+    def wrapper_func():
+        response = s.get(f'{BACKEND_URL}')
+        if response.status_code != 200:
+            return redirect(url_for('login')) 
+        route()
+    return wrapper_func
 
 @app.route('/')
 def home():
@@ -189,21 +196,26 @@ def user_delete(id):
 @app.route('/dashboard/budgets', methods=['GET'])
 def budgets():
     id = session['current_user']['id']
+    title = 'Budgets'
     response = s.get(f'{BACKEND_URL}/users/{id}/budgets')
     if response.status_code == 200:
-        title = 'Budgets'
         budgets = response.json().get('data')
         sorted_budgets = sorted(budgets, key=lambda d: d['id'], reverse=True)
         return render_template('budgets.html', title=title, budgets=sorted_budgets)
-    elif response.status_code == 401:
-        return redirect(url_for('dashboard'))
+    elif response.status_code == 404:
+        budgets = []
+        return render_template('budgets.html', title=title, budgets=budgets)
     else:
         flash(response.json().get('message'), 'danger')
-        return redirect(request.url)
+        return redirect(url_for('dashboard'))
 
 
 @app.route('/dashboard/budgets/add', methods=['GET', 'POST'])
 def add_budget():
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
+    title = 'Add Budget'
     id = session['current_user']['id']
     if request.method == 'POST':
         name = request.form.get('name')
@@ -235,11 +247,11 @@ def add_budget():
     else:
         response = s.get(f'{BACKEND_URL}/users/{id}/budgets')
         if response.status_code == 200:
-            title = 'Add Budget'
             budgets = response.json().get('data')
             return render_template('budget_add.html', title=title, budgets=budgets)
-        elif response.status_code == 401:
-            return redirect(url_for('dashboard'))
+        elif response.status_code == 404:
+            budgets = []
+            return render_template('budget_add.html', title=title, budgets=budgets)
         else:
             flash(response.json().get('message'), 'danger')
             return redirect(request.url)
@@ -247,6 +259,12 @@ def add_budget():
 
 @app.route('/dashboard/budgets/<int:budget_id>', methods=['GET', 'POST'])
 def edit_budget(budget_id):
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login'))
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
     id = session['current_user']['id']
     if request.method == 'POST':
         name = request.form.get('name')
@@ -289,6 +307,12 @@ def edit_budget(budget_id):
 
 @app.route('/dashboard/budgets/<int:budget_id>/delete', methods=['GET', 'POST'])
 def delete_budget(budget_id):
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
     id = session['current_user']['id']
     if request.method == 'POST':
         response = s.delete(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}')
@@ -313,17 +337,17 @@ def delete_budget(budget_id):
 
 @app.route('/dashboard/expenses', methods=['GET'])
 def expenses():
-    if 'current_user' in session:
-        id = session['current_user']['id']
-    else:
-        return redirect(url_for('dashboard'))
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
+    id = session['current_user']['id']
     res = s.get(f'{BACKEND_URL}/users/{id}/budgets-expenses')
 
     if not res.json().get('data'):
-        return redirect(url_for('dashboard'))
+        flash(f"{res.json().get('message')}. Please add a budget to use expenses", 'warning')
+        return redirect(url_for('add_budget'))
     
     budget_totals = {}
-
     if res.status_code == 200:
         data = res.json().get('data')
         for pairs in data:
@@ -345,10 +369,9 @@ def expenses():
 
 @app.route('/dashboard/expenses/add', methods=['GET', 'POST'])
 def expense_add():
-    if 'current_user' in session:
-        id = session['current_user']['id']
-    else:
-        return redirect(url_for('dashboard'))
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
     if request.method == 'POST':
         category = request.form.get('category')
         amount = request.form.get('amount')
@@ -380,10 +403,9 @@ def expense_add():
 
 @app.route('/dashboard/budget/<int:budget_id>/expenses/<int:expense_id>', methods=['GET', 'POST'])
 def expense_edit(budget_id, expense_id):
-    if 'current_user' in session:
-        id = session['current_user']['id']
-    else:
-        return redirect(url_for('dashboard'))
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
     if request.method == 'POST':
         category = request.form.get('category')
         amount = request.form.get('amount')
@@ -415,10 +437,9 @@ def expense_edit(budget_id, expense_id):
 
 @app.route('/dashboard/budget/<int:budget_id>/expenses/<int:expense_id>/delete', methods=['GET', 'POST'])
 def expense_delete(budget_id, expense_id):
-    if 'current_user' in session:
-        id = session['current_user']['id']
-    else:
-        return redirect(url_for('dashboard'))
+    response = s.get(f'{BACKEND_URL}')
+    if response.status_code != 200:
+        return redirect(url_for('login')) 
     if request.method == 'POST':
         response = s.delete(f'{BACKEND_URL}/users/{id}/budgets/{budget_id}/expenses/{expense_id}')
         if response.status_code == 200:
