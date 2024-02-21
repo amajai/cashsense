@@ -35,6 +35,17 @@
         {% endif %}
     </ul>
     <hr class="text-success">
+
+    <ul class="nav nav-pills flex-column ">
+        <li class="nav-item">
+            <a href="{{url_for('users')}}/{{session['current_user']['id']}}" class="nav-link {{ 'active' if active_page == 'edit_profile' else '' }}">
+                <i class="bi bi-pencil-square pe-2"></i>
+                Edit Profile
+            </a>
+        </li>
+    </ul>
+    <hr class="text-success">
+    
  
     <a href="{{url_for('logout')}}" role="button" class="btn btn-success">
         <i class="bi bi-box-arrow-left"></i>

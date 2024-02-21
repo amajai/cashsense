@@ -22,7 +22,6 @@
 				<table class="table table-bordered table-striped table-hover">
 					<thead>
 						<tr>
-							<th>ID</th>
 							<th>Name</th>
 							<th>Amount</th>
 							<th>Start Date</th>
@@ -34,7 +33,6 @@
 						{% if budgets %}
 							{% for budget in budgets %}
 							<tr>
-								<td>{{budget.id}}</td>
 								<td>{{budget.name}}</td>
 								<td>{{"₦{:,.2f}".format(budget.amount)}}</td>
 								<td>{{budget.start_date}}</td>
