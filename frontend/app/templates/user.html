@@ -1,5 +1,12 @@
 {% extends 'dashboard_base.html' %}
+{% if session['current_user']['id'] == user.id %}
+{% set active_page = "edit_profile" %}
+{% else %}
 {% set active_page = "users" %}
+{% endif %}
+
+
+
 {% block title %}User{% endblock %}
 
 
