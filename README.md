@@ -15,6 +15,7 @@ Cashsense is a full-fledged web application built to help users manage their spe
 - **Backend:**
   - Flask: A lightweight web application framework in Python.
   - Flask-RESTful: Extension for building REST APIs with Flask.
+  - MySQL: Relational Database Management System (RDBMS)
 
 - **Frontend:**
   - HTML, CSS, JavaScript: Building the user interface.
