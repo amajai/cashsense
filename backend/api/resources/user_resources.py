@@ -90,7 +90,6 @@ class UserLogout(Resource):
     def post(self):
         logout_user()
         res = jsonify({'message': 'Logged out Successfully'})
-        unset_jwt_cookies(res)
         return res
     
 
