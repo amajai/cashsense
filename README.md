@@ -36,7 +36,7 @@ pip install -r requirements.txt
 # Create a .env file and configure the necessary variables (e.g., BACKEND_URL, SECRET_KEY and SQLALCHEMY_DATABASE_URI)
 
 # Run frontend application
-flask run -p 5000 -h localhost -e development -a frontend.run
+flask run -p 3000 -h localhost -e development -a frontend.run
 
 # Run backend application
 flask run -p 5000 -h localhost -e development -a backend.app
@@ -51,6 +51,6 @@ Special thanks to the contributors who have helped make this project better!
   - [LinkedIn](https://www.linkedin.com/in/christianaziba)
 
 - **[Abdulmajeed Isa](mailto:abdulmajeed.isa@gmail.com)**
-  - Email: another.email@example.com
+  - Email: abdulmajeed.isa@gmail.com
   - [LinkedIn](https://www.linkedin.com/in/abdulmajeedai)
 
