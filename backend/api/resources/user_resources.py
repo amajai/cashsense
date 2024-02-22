@@ -3,13 +3,7 @@ from flask_restful import Resource, reqparse, fields, marshal
 from api.models.user_models import User
 from api import db, bcrypt
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
-                               unset_jwt_cookies, jwt_required
-
 from flask import jsonify
-from api import app
-from datetime import datetime, timedelta, timezone
-import json
 
 user_fields = {
     'id': fields.Integer,

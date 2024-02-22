@@ -8,7 +8,6 @@ from flask_restful import Api
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-from flask_jwt_extended import JWTManager
 from datetime import timedelta
 
 
@@ -31,7 +30,6 @@ login_manager = LoginManager(app)
 api = Api(app)
 cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
-jwt = JWTManager(app)
 
 # Initialize SQLAlchemy with the app after app is created
 db.init_app(app)

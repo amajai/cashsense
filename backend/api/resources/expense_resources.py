@@ -1,6 +1,5 @@
 """Budget resources"""
 from flask_restful import Resource, reqparse, fields, marshal
-from datetime import datetime
 from api.models.budget_models import Budget
 from api.models.expense_models import Expense
 from api import db
